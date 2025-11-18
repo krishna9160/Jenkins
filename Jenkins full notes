@@ -1,1 +1,45 @@
+JENKINS:- Jenkins is an open-source automation server widely used for Continuous Integration (CI) and Continuous Delivery (CD) in software development. It helps automate tasks like building, testing, and deploying applications, making the development process faster and more reliable. Jenkins supports numerous plugins, allowing integration with various tools and technologies across the DevOps pipeline.
+
+What Jenkins Solved:-
+Automated Builds & Tests: Jenkins automatically builds and tests code whenever changes are pushed.
+Continuous Integration: Frequent integration reduces conflicts and bugs.
+Pipeline Automation: End-to-end automation from build to deployment.
+Faster Delivery: Enables Continuous Delivery/Deployment for rapid releases.
+Extensibility: Thousands of plugins for integrating with tools like Git, Docker, Kubernetes, AWS, etc.
+
+✅ How Jenkins Works in DevOps:-
+Continuous Integration (CI):-
+Developers push code to a shared repository (e.g., GitHub).
+Jenkins automatically triggers a build whenever changes are detected.
+It compiles the code, runs tests, and reports results.
+
+Continuous Delivery/Deployment (CD):-
+After successful builds and tests, Jenkins can deploy the application to staging or production environments.
+It integrates with tools like Docker, Kubernetes, AWS, and more for automated deployments.
+
+✅ Continuous Delivery
+Goal: Ensure the application is always in a deployable state.
+Process: Code changes are automatically built, tested, and packaged.
+Deployment: Manual approval is required before pushing to production.
+Example: After automated tests pass, a release manager clicks “Deploy” to production.
+
+✅ Continuous Deployment
+Goal: Fully automate the release process.
+Process: Every code change that passes automated tests is deployed directly to production without human intervention.
+Deployment: No manual approval—it’s completely automated.
+Example: A developer commits code → tests pass → it goes live automatically.
+Key Difference:
+Delivery = Ready for production, but needs human approval.
+Deployment = Goes to production automatically.
+
+Pipeline Automation
+Jenkins uses Pipeline as Code (written in Jenkinsfile) to define steps like build, test, and deploy.
+This makes the process reproducible and version-controlled.
+
+✅ Key Features:-
+Open Source & Extensible: Thousands of plugins for integration with DevOps tools.
+Cross-Platform: Runs on Windows, Linux, macOS.
+Distributed Builds: Supports master-agent architecture for scaling.
+Easy Integration: Works with Git, Maven, Gradle, Docker, Kubernetes, etc.
+Customizable Pipelines: Declarative or scripted pipelines for flexibility.
 
