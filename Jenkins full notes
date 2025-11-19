@@ -43,3 +43,12 @@ Distributed Builds: Supports master-agent architecture for scaling.
 Easy Integration: Works with Git, Maven, Gradle, Docker, Kubernetes, etc.
 Customizable Pipelines: Declarative or scripted pipelines for flexibility.
 
+intalling:-
+-we need to install java-17 first (yum install java-17-amazon-corretto -y).
+(-sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo) --installing command.
+(sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key) -- setting up the key.
+-then copy the ip addr of the server:8080 and copy the path in the dash board to get the key.
+-remember .ssh wont work in jenkins, use https.
+
+
