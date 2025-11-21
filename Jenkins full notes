@@ -51,11 +51,95 @@ intalling:-
 -then copy the ip addr of the server:8080 and copy the path in the dash board to get the key.
 -remember .ssh wont work in jenkins, use https.
 
+What are Jenkins Triggers?
+Jenkins triggers are ways to automate the start of a build job.
+Instead of manually clicking “Build Now,” triggers start jobs based on certain conditions or events.
+
+Types of Jenkins Triggers:-
+
+SCM Polling
+Jenkins checks the Source Code Management (SCM) (like Git) at regular intervals.
+If changes are found, it triggers a build.
+Example: Poll every 5 minutes using H/5 * * * * (Cron syntax).
+
+Build Periodically
+Runs the job at fixed time intervals, regardless of code changes.
+Example: Every day at midnight.
+
+GitHub Hook / Webhook
+When you push code to GitHub, it notifies Jenkins immediately.
+Faster than polling because Jenkins doesn’t keep checking.
+
+Upstream/Downstream Trigger
+One job triggers another after it finishes.
+Useful for pipeline-like workflows.
+
+Trigger via API
+You can start a Jenkins job using HTTP API calls.
+Helpful for integration with other tools.
+
+Parameterized Trigger
+Pass parameters when triggering a job.
+Example: Trigger a job with a specific branch name.
+
+Why Use Triggers?
+Automation → Saves time.
+Continuous Integration → Builds happen as soon as code changes.
+Flexibility → Can integrate with many tools.
+------------------------------------------------------------------------------------------------
+✅ SCM Polling in Jenkins
+Purpose: Jenkins checks your Source Code Management (SCM) (e.g., Git, SVN) at regular intervals.
+If code changes are detected, Jenkins triggers a build automatically.
+This is useful for Continuous Integration when you don’t have webhooks set up.
+
+✅ How It Works
+Jenkins uses a Cron-like syntax to define the polling schedule.
+You configure this in the job under:
+Build Triggers → Poll SCM → Schedule
+
+✅ Cron Syntax in Jenkins
+The format is:
+MINUTE HOUR DAY_OF_MONTH MONTH DAY_OF_WEEK
+
+MINUTE: 0–59
+HOUR: 0–23
+DAY_OF_MONTH: 1–31
+MONTH: 1–12
+DAY_OF_WEEK: 0–7 (0 or 7 = Sunday)
+
+✅ Special Jenkins Syntax
+H → Hash-based value (distributes load evenly)
+H/5 → Every 5 units (minutes, hours, etc.)
+
+✅ Examples
+Every 5 minutes
+H/5 * * * *
+→ Poll SCM every 5 minutes.
+
+Every hour
+H * * * *
+→ Poll SCM once every hour.
+
+Every day at midnight
+H 0 * * *
+→ Poll SCM daily at 12:00 AM.
+
+Every weekday at 9 AM
+H 9 * * 1-5
+→ Poll SCM Monday to Friday at 9:00 AM.
+
+Every 15 minutes
+H/15 * * * *
+→ Poll SCM every 15 minutes.
+
+✅ Best Practice
+Use H instead of fixed numbers to avoid all jobs running at the same time.
+Avoid very frequent polling (like every minute) → can overload SCM server.
+----------------------------------------------------------------------------------------------------------
 ✅ What is a Webhook?
 A Webhook is a way for an external service (like GitHub) to notify Jenkins when an event occurs (e.g., a push to a repository). Instead of Jenkins polling GitHub, GitHub sends an HTTP POST request to Jenkins with details about the event.
 
 Why Use Webhooks?
-
 Reduces unnecessary polling.
 Immediate build trigger after code changes.
 Efficient for CI/CD pipelines.
@@ -99,8 +183,9 @@ Jenkinsfile (stored in your Git repo).
 Or inside Jenkins job configuration (if using classic UI).
 
 ✅ Quick Summary
-
 Webhook Payload URL:
 http://<jenkins-server>:8080/github-webhook/
 Default Jenkins Workspace Path:
 /var/lib/jenkins/workspace/<job-name>/
+
+
