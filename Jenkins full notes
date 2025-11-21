@@ -187,5 +187,134 @@ Webhook Payload URL:
 http://<jenkins-server>:8080/github-webhook/
 Default Jenkins Workspace Path:
 /var/lib/jenkins/workspace/<job-name>/
+-----------------------------------------------------------------------------------------------------
 
+✅ Build Periodically
+Purpose: Runs the Jenkins job at fixed time intervals, regardless of whether there are code changes.
+Useful for:
 
+Scheduled tasks (e.g., nightly builds, reports)
+Maintenance jobs
+Regular deployments
+
+✅ How It Works
+Configure under:
+Build Triggers → Build periodically → Schedule
+Uses Cron-like syntax (same as SCM Polling).
+
+✅ Cron Syntax Format
+MINUTE HOUR DAY_OF_MONTH MONTH DAY_OF_WEEK
+
+✅ Examples
+Every day at midnight
+H 0 * * *
+→ Runs daily at 12:00 AM.
+
+Every day at 6 AM
+H 6 * * *
+→ Runs daily at 6:00 AM.
+
+Every Monday at 9 AM
+H 9 * * 1
+→ Runs every Monday at 9:00 AM.
+
+Every 2 hours
+H H/2 * * *
+→ Runs every 2 hours.
+
+Every 15 minutes
+H/15 * * * *
+→ Runs every 15 minutes.
+
+✅ Difference from SCM Polling
+SCM Polling: Runs only if code changes are detected.
+Build Periodically: Runs at scheduled times even if no changes.
+
+-------------------------------------------------------------------------------------------------------
+
+✅ Upstream/Downstream Trigger
+Purpose: Allows one Jenkins job to trigger another job automatically after it finishes.
+Useful for:
+Pipeline-like workflows (e.g., Build → Test → Deploy)
+Breaking large processes into smaller jobs
+
+✅ How It Works
+Upstream Job: The first job that runs.
+Downstream Job: The job that runs after the upstream job completes.
+You configure this in:
+Post-build Actions → Build other projects
+Or use Parameterized Trigger Plugin for passing parameters.
+
+✅ Trigger Options
+Trigger only if build is stable: Downstream job runs only if upstream job succeeds.
+Trigger even if build fails: Useful for cleanup or notifications.
+Pass parameters: Send data like build number, branch name to downstream job.
+
+✅ Example Use Case
+Job A: Builds the application.
+Job B: Runs tests after Job A finishes.
+Job C: Deploys only if Job B passes.
+
+✅ Difference from Pipelines
+Pipelines (using Jenkinsfile) are more modern and flexible.
+Upstream/Downstream triggers are simpler but less powerful.
+
+----------------------------------------------------------------------------------------------------
+
+✅ Trigger via API
+Purpose: Start a Jenkins job using HTTP API calls.
+
+Useful for:
+Integration with other tools (e.g., scripts, CI/CD systems)
+Triggering builds from external applications
+
+How It Works:
+Jenkins provides a REST API.
+Example URL:
+http://<jenkins-server>/job/<job-name>/build
+
+For jobs with parameters:
+http://<jenkins-server>/job/<job-name>/buildWithParameters?param1=value1
+Requires API token or credentials for authentication.
+
+-----------------------------------------------------------------------------------------------------
+✅ Parameterized Trigger
+Purpose: Trigger a job and pass parameters to it.
+
+Useful for:
+Running builds for specific branches, environments, or versions.
+
+How It Works:
+Enable “This project is parameterized” in job configuration.
+Define parameters (e.g., BRANCH_NAME, ENVIRONMENT).
+
+Trigger using:
+Another Jenkins job (via Parameterized Trigger Plugin)
+API call with parameters
+Example:
+http://<jenkins-server>/job/DeployApp/buildWithParameters?BRANCH_NAME=feature-xyz
+
+✅ Key Difference:
+Trigger via API: Starts job externally (can be parameterized).
+Parameterized Trigger: Focuses on passing dynamic values to jobs.
+
+----------------------------------------------------------------------------------------------------
+
+##############################
+# ✅ Jenkins Build Steps
+##############################
+
+# Build Steps are actions Jenkins performs during a job.
+# Common Build Steps:
+- Execute Shell (Linux)
+- Execute Windows Batch Command
+- Invoke Maven
+- Invoke Gradle
+- Invoke Ant
+- Build other projects
+
+# Example Shell Command:
+echo "Building project"
+mvn clean install
+
+---------------------------------------------------------------------------------------------------------
