@@ -318,3 +318,108 @@ echo "Building project"
 mvn clean install
 
 ---------------------------------------------------------------------------------------------------------
+
+✅ Jenkins Pipeline (MOST IMPORTANT)
+What is a Jenkins Pipeline?
+A Jenkins Pipeline defines the CI/CD process as code, written in a Jenkinsfile.
+✅ Benefits:
+
+Version controlled
+Reproducible
+Easy to maintain
+Industry standard
+
+
+Pipeline Structure (Hierarchy)
+Pipeline
+ └── Agent
+     └── Stages
+         └── Stage
+             └── Steps
+
+
+Basic Jenkins Declarative Pipeline Syntax
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building application'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying application'
+            }
+        }
+    }
+}
+
+
+Key Pipeline Keywords
+
+pipeline – Root block
+agent – Where the pipeline runs
+stages – Group of pipeline phases
+stage – One logical phase (Build/Test/Deploy)
+steps – Commands to execute
+
+
+✅ Jenkins Workspace (VERY IMPORTANT CONCEPT)
+What is a Workspace?
+When Jenkins runs a job, it creates a directory called a workspace.
+Default workspace path:
+/var/lib/jenkins/workspace/<JOB_NAME>/
+
+✅ All pipeline commands execute from this directory.
+
+Example Workspace Structure
+If your Git repo looks like:
+Jenkins-test/
+ └── jenkins-pipeline/
+     ├── app.js
+     ├── package.json
+
+After checkout, Jenkins workspace becomes:
+/var/lib/jenkins/workspace/new-job/
+ └── jenkins-pipeline/
+     ├── app.js
+     ├── package.json
+
+
+Why Workspace Matters
+If Jenkins runs:
+pm2 start app.js
+
+It looks for:
+/var/lib/jenkins/workspace/new-job/app.js
+
+❌ File not found!
+✅ Real file location:
+/var/lib/jenkins/workspace/new-job/jenkins-pipeline/app.js
+
+
+✅ Correct Way: Using dir() in Pipeline
+stage('Deploy') {
+    steps {
+        dir('jenkins-pipeline') {
+            sh 'pm2 start app.js --name jenkins-app'
+        }
+    }
+}
+
+✅ dir() changes the working directory for commands
+✅ Best practice in Jenkins pipelines
+
+Debugging Workspace (Helpful)
+sh 'pwd'
+sh 'ls -l'
+sh 'ls -l jenkins-pipeline'
