@@ -29,3 +29,377 @@ Prod Registry
 EKS Production
    ↓
 Users
+
+
+=========================
+DEVSECOPS PIPELINE SUMMARY
+=========================
+
+1. Source Code Management
+-------------------------
+Tool: Git, GitHub/GitLab
+
+Why?
+- Version control
+- Collaboration between developers
+- Pull Requests and code reviews
+
+Flow:
+Developer → Feature Branch → PR → QA Branch
+
+
+2. Webhook Trigger
+------------------
+Tool: GitHub Webhook / GitLab Webhook
+
+Why?
+- Automatically trigger Jenkins when code is merged
+
+Flow:
+QA Branch Updated
+       ↓
+Webhook
+       ↓
+Jenkins
+
+
+3. Checkout Source Code
+-----------------------
+Tool: Git
+
+Command:
+git clone <repo>
+
+Why?
+- Download latest code into Jenkins workspace
+- Required before scanning or building
+
+
+4. Gitleaks Scan
+----------------
+Tool: Gitleaks
+
+Command:
+gitleaks detect --source .
+
+Why?
+- Detect passwords
+- Detect API Keys
+- Detect AWS Credentials
+- Detect Tokens
+- Detect Secrets
+
+Example:
+AWS Keys
+GitHub Tokens
+Database Passwords
+
+If secrets found:
+Pipeline Stops
+
+
+5. Checkov Scan
+---------------
+Tool: Checkov
+
+Command:
+checkov -d .
+
+Why?
+- Scan Terraform
+- Scan Kubernetes YAML
+- Scan Dockerfiles
+- Detect security misconfigurations
+
+Examples:
+Public S3 Buckets
+Open Security Groups
+Privileged Containers
+Running as Root
+
+If critical issues found:
+Pipeline Stops
+
+
+6. Trivy Filesystem Scan
+------------------------
+Tool: Trivy FS
+
+Command:
+trivy fs .
+
+Why?
+- Scan application dependencies
+- Detect vulnerable packages
+- Detect CVEs
+
+Files Scanned:
+package.json
+pom.xml
+requirements.txt
+
+Examples:
+log4j
+OpenSSL
+Node Packages
+
+If critical vulnerabilities found:
+Pipeline Stops
+
+
+7. ESLint
+---------
+Tool: ESLint
+
+Command:
+npm run lint
+
+Why?
+- Coding standards
+- Syntax checking
+- Unused variables
+- Potential bugs
+
+Examples:
+Unused variables
+Missing semicolons
+Bad coding practices
+
+If failed:
+Pipeline Stops
+
+
+8. Unit Testing
+---------------
+Tools:
+Jest
+JUnit
+PyTest
+
+Commands:
+npm test
+mvn test
+pytest
+
+Why?
+- Validate functionality
+- Ensure code works correctly
+- Prevent regressions
+
+If tests fail:
+Pipeline Stops
+
+
+9. SonarQube Analysis
+---------------------
+Tool: SonarQube
+
+Command:
+sonar-scanner
+
+Why?
+- Detect Bugs
+- Detect Vulnerabilities
+- Detect Code Smells
+- Detect Code Duplication
+- Measure Maintainability
+- Measure Code Coverage
+
+Example:
+Large methods
+Duplicate code
+Security issues
+
+
+10. Quality Gate
+----------------
+Tool: SonarQube
+
+Why?
+- Final approval before build
+
+Typical Rules:
+Coverage > 80%
+No Critical Bugs
+No Critical Vulnerabilities
+
+If Quality Gate Fails:
+Pipeline Stops
+
+
+11. Build Application
+---------------------
+Tools:
+Maven
+Gradle
+npm
+
+Commands:
+mvn clean package
+npm run build
+
+Why?
+- Convert source code into deployable artifacts
+
+Outputs:
+app.jar
+app.war
+build/
+
+If build fails:
+Pipeline Stops
+
+
+12. Docker Build
+----------------
+Tool: Docker
+
+Command:
+docker build -t myapp:v1 .
+
+Why?
+- Package application and dependencies
+- Create portable container image
+
+Output:
+Docker Image
+
+
+13. Trivy Image Scan
+--------------------
+Tool: Trivy
+
+Command:
+trivy image myapp:v1
+
+Why?
+- Scan complete Docker image
+- Scan OS packages
+- Scan base image vulnerabilities
+- Scan runtime libraries
+
+Examples:
+Ubuntu Vulnerabilities
+OpenSSL Vulnerabilities
+
+If critical vulnerabilities found:
+Pipeline Stops
+
+
+14. SBOM Generation
+-------------------
+Tools:
+Trivy
+Syft
+
+Commands:
+syft myapp:v1
+or
+trivy image --format cyclonedx
+
+Why?
+- Software Bill of Materials
+- Inventory of all packages
+- Compliance
+- Vulnerability tracking
+- Supply chain security
+
+Think:
+SBOM = Ingredients List
+
+
+15. Push Image to Registry
+--------------------------
+Tool:
+AWS ECR
+
+Commands:
+aws ecr get-login-password
+docker push <repo>:tag
+
+Why?
+- Store image centrally
+- Allow Kubernetes to pull image
+
+Output:
+Image stored in ECR
+
+
+16. Connect to EKS
+------------------
+Tools:
+AWS CLI
+kubectl
+
+Command:
+aws eks update-kubeconfig
+
+Why?
+- Configure access to Kubernetes cluster
+- Generate kubeconfig
+
+
+17. Deploy to Kubernetes
+------------------------
+Tool:
+kubectl
+
+Command:
+kubectl apply -f deployment.yaml
+
+Why?
+- Deploy latest image
+- Create/Update Deployment
+- Create/Update Pods
+
+
+18. Rolling Update
+------------------
+Tool:
+Kubernetes Deployment Controller
+
+Commands:
+kubectl apply -f deployment.yaml
+
+Check Status:
+kubectl rollout status deployment/myapp
+
+Why?
+- Zero downtime deployment
+- Gradually replace old pods
+
+Example:
+
+v1.0 v1.0 v1.0
+      ↓
+v1.1 v1.0 v1.0
+      ↓
+v1.1 v1.1 v1.0
+      ↓
+v1.1 v1.1 v1.1
+
+
+19. Rollback
+------------
+Tool:
+Kubernetes
+
+Commands:
+
+Rollback Previous Version:
+kubectl rollout undo deployment/myapp
+
+Rollback Specific Revision:
+kubectl rollout undo deployment/myapp --to-revision=2
+
+Why?
+- Recover quickly from bad deployments
+
+
+=========================
+2-MINUTE INTERVIEW SUMMARY
+=========================
+
+Developers push code to a feature branch and create a pull request to the QA branch. After code review and approval, the PR is merged into QA, which triggers a webhook and starts the Jenkins pipeline. Jenkins checks out the latest code and performs security scans using Gitleaks to detect secrets, Checkov to scan Terraform, Kubernetes manifests, and Dockerfiles, and Trivy FS to identify vulnerable dependencies. Next, ESLint validates coding standards, unit tests verify application functionality, and SonarQube performs code quality analysis. The SonarQube Quality Gate ensures coverage, security, and quality standards are met before continuing.
+
+Once all validations pass, Jenkins builds the application artifact and creates a Docker image. The image is scanned using Trivy Image Scan to detect OS and container vulnerabilities, and an SBOM is generated for compliance and software inventory tracking. The approved image is then pushed to AWS ECR. Jenkins connects to the EKS cluster using AWS CLI and kubeconfig, updates the deployment with the new image version, and deploys it using kubectl. Kubernetes performs a rolling update to replace pods gradually without downtime. If any issue is identified after deployment, Kubernetes rollback commands can restore the previous stable version quickly.
