@@ -1,0 +1,31 @@
+Developer
+   ↓
+Feature Branch
+   ↓
+QA Branch
+   ↓
+Security Scans
+   ↓
+Lint/Test
+   ↓
+SonarQube
+   ↓
+Docker Build
+   ↓
+Trivy + SBOM
+   ↓
+QA Registry
+   ↓
+EKS QA
+   ↓
+QA Testing
+   ↓
+Merge Main
+   ↓
+Promote Image
+   ↓
+Prod Registry
+   ↓
+EKS Production
+   ↓
+Users
